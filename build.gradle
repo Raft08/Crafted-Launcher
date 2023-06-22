@@ -1,0 +1,59 @@
+plugins {
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+group "${project_group}"
+version "${project_version}"
+
+sourceCompatibility = '17'
+targetCompatibility = '17'
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+javafx {
+    version = '20'
+    modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+
+}
+
+compileJava {
+    options.encoding = "UTF-8"
+}
+
+shadowJar {
+    manifest {
+        attributes 'Main-Class': "${project_main_class}"
+        attributes 'Description': "${build_description}"
+    }
+    archiveClassifier.set('')
+    mergeServiceFiles()
+}
+
+//Only build shadowJar
+build.dependsOn(shadowJar)
+jar.enabled = false
+
+tasks.register('runLauncher', JavaExec) {
+    dependsOn build
+    doFirst {
+        File runDir = new File("./run")
+        if (!runDir.exists()) {
+            runDir.mkdirs()
+        }
+        workingDir = runDir
+    }
+    mainClass.set("${project_main_class}")
+    classpath = files(shadowJar.archiveFile)
+    args '-launcher:dev' // program arguments go here
+}
