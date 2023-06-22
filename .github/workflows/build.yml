@@ -24,7 +24,7 @@ jobs:
         if: ${{ runner.os != 'Windows' }}
         run: chmod +x ./gradlew
       - name: Build
-        run: ./gradlew distributeAll
+        run: ./gradlew build
       - name: Capture build artifacts
         if: ${{ runner.os == 'Windows' && matrix.java == '17' }}
         uses: actions/upload-artifact@v3
