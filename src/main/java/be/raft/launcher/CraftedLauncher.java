@@ -26,29 +26,70 @@
 
 package be.raft.launcher;
 
+import be.raft.launcher.file.GameFileManager;
+import be.raft.launcher.file.loader.JsonStreamLoader;
+import be.raft.launcher.gui.GuiLauncher;
+import be.raft.launcher.gui.Text;
 import be.raft.launcher.misc.LaunchArguments;
+import be.raft.launcher.misc.Settings;
+import com.google.gson.JsonObject;
+import javafx.application.Application;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
+import java.util.Locale;
+import java.util.Set;
 
 public class CraftedLauncher {
     public static final Logger logger = LoggerFactory.getLogger("Crafted-Launcher");
-    public static LaunchArguments launchArgs;
+    private static LaunchArguments launchArgs;
 
     public static void main(String[] args) {
         CraftedLauncher.logger.info("Validating environment..");
 
         //Env validation
-        if (validateJavaFx()) {
+        if (!validateJavaFx()) {
             return;
         }
 
         //Argument parsing
         launchArgs = LaunchArguments.buildArguments(args);
 
+
         //Misc
         System.setProperty("prism.lcdtext", "false"); //Enhance smoothness of the text
+        if (!GameFileManager.getGameDirectory().isDirectory()) {
+            GameFileManager.getGameDirectory().mkdirs();
+        }
+
+        //Detect and load lang
+        Settings settings = Settings.getSettings();
+
+        String[] lang = settings.getLang().split("_");
+
+        if (Text.getAvailableLocale().containsKey(lang[0])) {
+            if (Text.getAvailableLocale().get(lang[0]).contains(lang[1])) {
+                //Load Locale
+                Locale locale = new Locale(lang[0], lang[1]);
+            } else {
+                CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
+                String newLang = lang[0] + "_" + Text.getAvailableLocale().get(lang[0]).get(0);
+                CraftedLauncher.logger.warn("Switching language to '{}'", newLang);
+                settings.setLang(newLang);
+                settings.save();
+            }
+        } else {
+            CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
+            CraftedLauncher.logger.warn("Switching language to 'en_us'");
+            settings.setLang("en_us");
+            settings.save();
+        }
+
+        JsonObject loadedLocale = Text.loadLocale(settings.getLang() + ".json");
+        CraftedLauncher.logger.info("Loaded '{}'", settings.getLang());
+
+        Application.launch(GuiLauncher.class);
     }
 
     private static boolean validateJavaFx() {

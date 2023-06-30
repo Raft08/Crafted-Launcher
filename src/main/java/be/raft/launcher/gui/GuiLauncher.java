@@ -26,15 +26,35 @@
 
 package be.raft.launcher.gui;
 
+import be.raft.launcher.gui.panel.LoadingPanel;
+import be.raft.launcher.gui.theme.DefaultTheme;
 import javafx.application.Application;
 import javafx.stage.Stage;
 
 public class GuiLauncher extends Application {
     private Window window;
 
-
     @Override
     public void start(Stage stage) throws Exception {
+        launcher = this;
+        this.window = new Window(stage, new LoadingPanel(this), DefaultTheme.THEME);
+        this.window.show();
+    }
 
+    public Window getWindow() {
+        return window;
+    }
+
+    public void setWindow(Window window) {
+        this.window.close();
+        this.window = window;
+        this.window.show();
+    }
+
+    //Static
+    public static GuiLauncher launcher;
+
+    public static GuiLauncher getLauncher() {
+        return launcher;
     }
 }

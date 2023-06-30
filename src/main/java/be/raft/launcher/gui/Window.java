@@ -27,20 +27,37 @@
 package be.raft.launcher.gui;
 
 import be.raft.launcher.gui.panel.Panel;
+import be.raft.launcher.gui.theme.Theme;
+import javafx.scene.Scene;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
-public class Window {
+import java.io.Closeable;
+import java.io.IOException;
+
+public class Window implements Closeable {
     private final Stage stage;
     private final GridPane layout;
-    private final String title;
     private Panel panel;
+    private Theme theme;
 
-    public Window(Stage stage, String title, Panel panel) {
+    public Window(Stage stage, Panel panel, Theme theme) {
         this.stage = stage;
         this.layout = new GridPane();
-        this.title = title;
         this.panel = panel;
+        this.theme = theme;
+
+        //Initialize
+        Scene scene = new Scene(this.layout);
+        scene.getStylesheets().add(theme.getStylesheet());
+        this.stage.setScene(scene);
+
+        //Initialize the panel
+        panel.init(this.stage);
+        panel.getLayout().setId(panel.toString());
+
+        //Apply the panel
+        this.layout.getChildren().add(panel.getLayout());
     }
 
     public void setPanel(Panel panel) {
@@ -49,11 +66,24 @@ public class Window {
         this.panel = panel;
 
         //Initialize the panel
-        panel.init();
+        panel.init(this.stage);
         panel.getLayout().setId(panel.toString());
 
         //Apply the panel
         this.layout.getChildren().add(panel.getLayout());
+    }
+
+    public void show() {
+        this.stage.show();
+    }
+
+    public void hide() {
+        this.stage.hide();
+    }
+
+    @Override
+    public void close() {
+        this.stage.close();
     }
 
     public Stage getStage() {
@@ -62,10 +92,6 @@ public class Window {
 
     public GridPane getLayout() {
         return layout;
-    }
-
-    public String getTitle() {
-        return title;
     }
 
     public Panel getPanel() {

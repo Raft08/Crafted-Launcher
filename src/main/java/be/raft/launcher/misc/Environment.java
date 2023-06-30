@@ -26,6 +26,7 @@
 
 package be.raft.launcher.misc;
 
+import be.raft.launcher.CraftedLauncher;
 import com.sun.management.OperatingSystemMXBean;
 
 import java.lang.management.ManagementFactory;
@@ -65,6 +66,8 @@ public class Environment {
 
         public static OperatingSystem getOs() {
             String osStr = System.getProperty("os.name");
+
+            CraftedLauncher.logger.info(osStr);
 
             if (osStr.contains("win")) {
                 return WINDOWS;

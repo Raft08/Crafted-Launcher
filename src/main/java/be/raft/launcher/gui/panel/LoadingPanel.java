@@ -27,6 +27,8 @@
 package be.raft.launcher.gui.panel;
 
 import be.raft.launcher.gui.GuiLauncher;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
 
 public class LoadingPanel extends Panel {
@@ -35,7 +37,15 @@ public class LoadingPanel extends Panel {
     }
 
     @Override
-    public void init() {
+    public void init(Stage stage) {
+        //stage
+        stage.centerOnScreen();
+        stage.setTitle("Crafted Launcher - Loading");
+        stage.initStyle(StageStyle.TRANSPARENT);
+        stage.setHeight(420);
+        stage.setWidth(720);
+
+        //Layout
 
     }
 

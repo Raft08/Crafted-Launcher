@@ -29,6 +29,7 @@ package be.raft.launcher.gui.panel;
 import be.raft.launcher.gui.GuiLauncher;
 import be.raft.launcher.gui.Placing;
 import javafx.scene.layout.GridPane;
+import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class Panel {
@@ -41,7 +42,7 @@ public abstract class Panel {
         this.guiLauncher = guiLauncher;
     }
 
-    public abstract void init();
+    public abstract void init(Stage stage);
 
     @NotNull
     @Override
