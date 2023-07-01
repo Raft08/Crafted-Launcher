@@ -27,6 +27,12 @@
 package be.raft.launcher.gui.panel;
 
 import be.raft.launcher.gui.GuiLauncher;
+import be.raft.launcher.gui.Placing;
+import be.raft.launcher.gui.Text;
+import be.raft.launcher.gui.theme.Theme;
+import javafx.scene.control.Label;
+import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +43,7 @@ public class LoadingPanel extends Panel {
     }
 
     @Override
-    public void init(Stage stage) {
+    public void init(Stage stage, Theme theme) {
         //stage
         stage.centerOnScreen();
         stage.setTitle("Crafted Launcher - Loading");
@@ -45,8 +51,30 @@ public class LoadingPanel extends Panel {
         stage.setHeight(420);
         stage.setWidth(720);
 
-        //Layout
+        this.guiLauncher.getWindow().getLayout().setBackground(new Background(new BackgroundImage(theme.getBackground(),
+                BackgroundRepeat.NO_REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.CENTER,
+                new BackgroundSize(1.0, 1.0, true, true, false, true))));
 
+        //Layout
+        Label title = new Label(Text.translate("loading.launcher.title"));
+        title.setId("loading-title");
+
+        Placing.setCanTakeAllSize(title);
+        Placing.setCenterV(title);
+
+        ProgressBar loadingBar = new ProgressBar();
+        loadingBar.setId("loading-bar");
+
+        Placing.setCanTakeAllSize(loadingBar);
+        Placing.setCenterV(loadingBar);
+
+        Label loadingDescription = new Label(Text.translate("generic.launcher.loading"));
+        loadingDescription.setId("loading-description");
+
+        Placing.setCanTakeAllSize(loadingDescription);
+        Placing.setCenterV(loadingDescription);
+
+        this.layout.getChildren().addAll(title, loadingBar, loadingDescription);
     }
 
     @Override

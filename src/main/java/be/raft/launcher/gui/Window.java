@@ -41,23 +41,15 @@ public class Window implements Closeable {
     private Panel panel;
     private Theme theme;
 
-    public Window(Stage stage, Panel panel, Theme theme) {
+    public Window(Stage stage, Theme theme) {
         this.stage = stage;
         this.layout = new GridPane();
-        this.panel = panel;
         this.theme = theme;
 
         //Initialize
         Scene scene = new Scene(this.layout);
         scene.getStylesheets().add(theme.getStylesheet());
         this.stage.setScene(scene);
-
-        //Initialize the panel
-        panel.init(this.stage);
-        panel.getLayout().setId(panel.toString());
-
-        //Apply the panel
-        this.layout.getChildren().add(panel.getLayout());
     }
 
     public void setPanel(Panel panel) {
@@ -66,7 +58,7 @@ public class Window implements Closeable {
         this.panel = panel;
 
         //Initialize the panel
-        panel.init(this.stage);
+        panel.init(this.stage, this.theme);
         panel.getLayout().setId(panel.toString());
 
         //Apply the panel
@@ -80,7 +72,6 @@ public class Window implements Closeable {
     public void hide() {
         this.stage.hide();
     }
-
     @Override
     public void close() {
         this.stage.close();
@@ -97,4 +88,9 @@ public class Window implements Closeable {
     public Panel getPanel() {
         return panel;
     }
+
+    public Theme getTheme() {
+        return theme;
+    }
+
 }

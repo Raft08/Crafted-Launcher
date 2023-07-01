@@ -1,4 +1,6 @@
 {
+  "generic.launcher.loading": "Loading...",
+
   "loading.launcher.title": "Crafted Launcher",
   "loading.launcher.themes": "Loading themes..",
   "loading.launcher.version": "Loading versions..",

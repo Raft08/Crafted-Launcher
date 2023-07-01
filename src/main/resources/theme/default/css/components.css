@@ -30,7 +30,7 @@
 }
 
 .grid-pane {
-    background-color: transparent;
+    -fx-background-color: transparent;
 }
 
 .label {
@@ -38,4 +38,24 @@
     -fx-font-weight: bold;
     -fx-font-family: "Avenir Medium";
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 2, 0, 0, 0);
+}
+
+.progress-bar {
+    -fx-background-color: transparent;
+}
+
+.progress-bar .bar {
+    -fx-padding: 2px;
+    -fx-background-insets: 0;
+    -fx-background-color: white;
+}
+
+.progress-bar > .track {
+    -fx-background-color: transparent;
+    -fx-text-box-border: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.progress-bar .indicator {
+    -fx-background-color: transparent;
 }

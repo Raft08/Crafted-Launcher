@@ -63,31 +63,8 @@ public class CraftedLauncher {
             GameFileManager.getGameDirectory().mkdirs();
         }
 
-        //Detect and load lang
-        Settings settings = Settings.getSettings();
-
-        String[] lang = settings.getLang().split("_");
-
-        if (Text.getAvailableLocale().containsKey(lang[0])) {
-            if (Text.getAvailableLocale().get(lang[0]).contains(lang[1])) {
-                //Load Locale
-                Locale locale = new Locale(lang[0], lang[1]);
-            } else {
-                CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
-                String newLang = lang[0] + "_" + Text.getAvailableLocale().get(lang[0]).get(0);
-                CraftedLauncher.logger.warn("Switching language to '{}'", newLang);
-                settings.setLang(newLang);
-                settings.save();
-            }
-        } else {
-            CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
-            CraftedLauncher.logger.warn("Switching language to 'en_us'");
-            settings.setLang("en_us");
-            settings.save();
-        }
-
-        JsonObject loadedLocale = Text.loadLocale(settings.getLang() + ".json");
-        CraftedLauncher.logger.info("Loaded '{}'", settings.getLang());
+        //Initialize Translator
+        Text.init();
 
         Application.launch(GuiLauncher.class);
     }

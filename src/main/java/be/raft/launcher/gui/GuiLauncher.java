@@ -37,7 +37,8 @@ public class GuiLauncher extends Application {
     @Override
     public void start(Stage stage) throws Exception {
         launcher = this;
-        this.window = new Window(stage, new LoadingPanel(this), DefaultTheme.THEME);
+        this.window = new Window(stage, DefaultTheme.THEME);
+        this.window.setPanel(new LoadingPanel(this));
         this.window.show();
     }
 

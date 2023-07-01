@@ -28,6 +28,7 @@ package be.raft.launcher.gui.panel;
 
 import be.raft.launcher.gui.GuiLauncher;
 import be.raft.launcher.gui.Placing;
+import be.raft.launcher.gui.theme.Theme;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 import org.jetbrains.annotations.NotNull;
@@ -42,7 +43,7 @@ public abstract class Panel {
         this.guiLauncher = guiLauncher;
     }
 
-    public abstract void init(Stage stage);
+    public abstract void init(Stage stage, Theme theme);
 
     @NotNull
     @Override

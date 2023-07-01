@@ -28,6 +28,7 @@ package be.raft.launcher.gui;
 
 import be.raft.launcher.CraftedLauncher;
 import be.raft.launcher.file.loader.JsonStreamLoader;
+import be.raft.launcher.misc.Settings;
 import com.google.gson.JsonObject;
 
 import java.io.IOException;
@@ -38,11 +39,9 @@ import java.util.Locale;
 import java.util.Map;
 
 public class Text {
-    private static Locale locale;
     private static JsonObject jsonLang;
 
-    public static void load(Locale setLocale, JsonObject parsedLang) {
-        locale = setLocale;
+    public static void load(JsonObject parsedLang) {
         jsonLang = parsedLang;
     }
 
@@ -52,10 +51,6 @@ public class Text {
         }
 
         return jsonLang.get(key).getAsString();
-    }
-
-    public static Locale getLocale() {
-        return locale;
     }
 
     public static JsonObject getJsonLang() {
@@ -78,5 +73,27 @@ public class Text {
             CraftedLauncher.logger.error("Unable to load '{}'!", fileName, e);
             return null;
         }
+    }
+
+    public static void init() {
+        Settings settings = Settings.getSettings();
+        String[] lang = settings.getLang().split("_");
+
+        if (Text.getAvailableLocale().containsKey(lang[0])) {
+            if (!Text.getAvailableLocale().get(lang[0]).contains(lang[1])) {
+                CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
+                String newLang = lang[0] + "_" + Text.getAvailableLocale().get(lang[0]).get(0);
+                CraftedLauncher.logger.warn("Switching language to '{}'", newLang);
+                settings.setLang(newLang);
+                settings.save();
+            }
+        } else {
+            CraftedLauncher.logger.warn("Can not find translation '{}'", Settings.getSettings().getLang());
+            CraftedLauncher.logger.warn("Switching language to 'en_us'");
+            settings.setLang("en_us");
+            settings.save();
+        }
+
+        load(Text.loadLocale(settings.getLang() + ".json"));
     }
 }

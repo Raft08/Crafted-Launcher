@@ -53,13 +53,17 @@ jar.enabled = false
 tasks.register('runLauncher', JavaExec) {
     dependsOn build
     doFirst {
-        File runDir = new File("./run")
-        if (!runDir.exists()) {
-            runDir.mkdirs()
-        }
-        workingDir = runDir
+        initRun
     }
+    workingDir = new File("./run")
     mainClass.set("${project_main_class}")
     classpath = files(shadowJar.archiveFile)
     args '-launcher:dev' // program arguments go here
+}
+
+tasks.register('initRun') {
+    File runDir = new File("./run")
+    if (!runDir.exists()) {
+        runDir.mkdirs()
+    }
 }

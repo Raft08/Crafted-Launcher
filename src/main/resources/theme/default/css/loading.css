@@ -1,0 +1,21 @@
+#loading-panel {
+    -fx-background-color: rgba(0, 0, 0, 0.12);
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.8), 10, 0, 0, 3);
+    -fx-effect-insets: 0 0 0 10;
+}
+
+#loading-title {
+    -fx-font-size: 54px;
+    -fx-padding: 25;
+    -fx-translate-y: -35;
+}
+
+#loading-bar {
+    -fx-pref-width: 720;
+}
+
+#loading-description {
+    -fx-font-size: 20px;
+    -fx-padding: 25;
+    -fx-translate-y: 25;
+}
