@@ -1,0 +1,75 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'eclipse'
+    id 'org.ajoberstar.grgit' version '5.2.1'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
+}
+
+group = "${project.group}"
+version = "${project.version}"
+
+repositories {
+    mavenCentral()
+    maven {
+        name = "AtlasWorld Repo"
+        url = "https://repository.atlasworld.fr/repository/maven-public/"
+    }
+}
+
+eclipse {
+    classpath {
+        downloadSources = true
+    }
+}
+
+idea {
+    module {
+        downloadSources = true
+    }
+}
+
+dependencies {
+    // Utilities
+    implementation "fr.atlasworld.common:common:${atlascommon}"
+}
+
+javafx {
+    version = "${javafx}"
+    modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
+}
+
+
+shadowJar {
+    manifest {
+        attributes 'Name': "${project.name}"
+        attributes 'Version': "${project.version}"
+        attributes 'Main-Class': "${main_class}"
+        attributes 'Create-By': "${vendor}"
+    }
+    transform(Log4j2PluginsCacheFileTransformer)
+    archiveClassifier.set('')
+    archiveBaseName.set("${project.name}");
+    mergeServiceFiles()
+}
+
+jar {
+    enabled = false
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var properties = [
+            version         : project.version,
+            commit          : grgit.head().id,
+            branch          : grgit.branch.current().name
+    ]
+
+    inputs.properties properties
+
+    filesMatching(['version.json']) {
+        expand properties + [project: project]
+    }
+}
