@@ -149,9 +149,3 @@ tasks.register('initialSetup') {
         dependsOn downloadJDKLinux64
     }
 }
-
-if (idea.project != null) {
-    idea.project.settings.taskTriggers {
-        afterSync initialSetup
-    }
-}

@@ -58,6 +58,7 @@ InstallDir "$PROGRAMFILES${BITS}\${PROG_DIR}"
 !define MUI_ABORTWARNING
 
 !insertmacro MUI_PAGE_WELCOME
+!insertmacro MUI_PAGE_LICENSE ".\win${BITS}\LICENSE"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH

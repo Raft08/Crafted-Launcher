@@ -27,12 +27,15 @@ launch4j {
 }
 
 tasks.register('prepareDistWin64', Copy.class) {
+    group 'distribution'
+
     dependsOn downloadJDKWin64
     dependsOn createAllExecutables
     dependsOn jar
 
     into 'build/dist/win64'
     into('') {
+        from file('LICENSE')
         from file('build/launch4j/' + "${project.name}.exe".replace(" ", "-"))
     }
     into('lib') {
