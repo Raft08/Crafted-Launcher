@@ -1,12 +1,12 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
-
 plugins {
     id 'java'
     id 'idea'
     id 'eclipse'
+    id "de.undercouch.download" version "5.5.0"
+    id 'edu.sc.seis.launch4j' version '3.0.5'
     id 'org.ajoberstar.grgit' version '5.2.1'
     id 'org.openjfx.javafxplugin' version '0.1.0'
-    id 'com.github.johnrengelman.shadow' version '7.1.0'
+    id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
 }
 
 group = "${project.group}"
@@ -37,29 +37,6 @@ dependencies {
     implementation "fr.atlasworld.common:common:${atlascommon}"
 }
 
-javafx {
-    version = "${javafx}"
-    modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
-}
-
-
-shadowJar {
-    manifest {
-        attributes 'Name': "${project.name}"
-        attributes 'Version': "${project.version}"
-        attributes 'Main-Class': "${main_class}"
-        attributes 'Create-By': "${vendor}"
-    }
-    transform(Log4j2PluginsCacheFileTransformer)
-    archiveClassifier.set('')
-    archiveBaseName.set("${project.name}");
-    mergeServiceFiles()
-}
-
-jar {
-    enabled = false
-}
-
 tasks.withType(ProcessResources).configureEach {
     var properties = [
             version         : project.version,
@@ -73,3 +50,52 @@ tasks.withType(ProcessResources).configureEach {
         expand properties + [project: project]
     }
 }
+
+configurations {
+    testImplementation.extendsFrom compileOnly
+
+    provided
+    compileOnly.extendsFrom provided
+    runtimeOnly.extendsFrom provided
+
+    export.extendsFrom implementation
+    export.canBeResolved = true
+
+    win64
+    macX64
+    macAarch64
+    linux64
+}
+
+configurations.win64.attributes {
+    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+    attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, OperatingSystemFamily.WINDOWS))
+    attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, MachineArchitecture.X86_64))
+}
+
+configurations.macX64.attributes {
+    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+    attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS))
+    attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, MachineArchitecture.X86_64))
+}
+
+configurations.macAarch64.attributes {
+    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+    attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, OperatingSystemFamily.MACOS))
+    attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, MachineArchitecture.ARM64))
+}
+
+configurations.linux64.attributes {
+    attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage, Usage.JAVA_RUNTIME))
+    attribute(OperatingSystemFamily.OPERATING_SYSTEM_ATTRIBUTE, objects.named(OperatingSystemFamily, OperatingSystemFamily.LINUX))
+    attribute(MachineArchitecture.ARCHITECTURE_ATTRIBUTE, objects.named(MachineArchitecture, MachineArchitecture.X86_64))
+}
+
+javafx {
+    version = "${javafx}"
+    modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
+    configurations = ['provided', 'win64', 'macX64', 'macAarch64', 'linux64']
+}
+
+apply from: 'platform/setup.gradle'
+apply from: 'platform/dist.gradle'

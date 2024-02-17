@@ -1,0 +1,103 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+launch4j {
+    outfile = "${project.name}.exe".replace(" ", "-")
+    mainClassName = "${main_class}"
+    dontWrapJar = true
+    copyConfigurable = []
+    classpath = ["./lib/*"]
+    libraryDir = "null"
+    stayAlive = true
+
+    bundledJrePath = 'jdk'
+    requiresJdk = true
+    requires64Bit = true
+
+    errTitle = "${project.name}".replace(" ", "-")
+    supportUrl = "${issue_link}"
+
+    fileDescription = "${project.name} ${project.version} (" + grgit.branch.current().name + ": " + grgit.head().id.substring(0, 7) + ")"
+    version = "${project.version}"
+    textVersion = "${project.version} (" + grgit.branch.current().name + ": " + grgit.head().id.substring(0, 7) + ")"
+    productName = "${project.name}".replace(" ", "-")
+    companyName = "${vendor}"
+    copyright = "${vendor}"
+
+    icon = "${projectDir}/src/main/resources/assets/img/icon.ico"
+}
+
+tasks.register('prepareDistWin64', Copy.class) {
+    dependsOn downloadJDKWin64
+    dependsOn createAllExecutables
+    dependsOn jar
+
+    into 'build/dist/win64'
+    into('') {
+        from file('build/launch4j/' + "${project.name}.exe".replace(" ", "-"))
+    }
+    into('lib') {
+        from 'build/libs'
+        from configurations.export
+        from configurations.win64
+    }
+    into('jdk') { from 'build/build/jdk/jdk17_win_64' }
+}
+
+tasks.register('distWindowsZip', Zip.class) {
+    group 'distribution'
+
+    dependsOn prepareDistWin64
+
+    from 'build/dist/win64/'
+    into "${project.name}".replace(" ", "-").toLowerCase() + "-v${project.version}-Windows-x64"
+    destinationDirectory = file('build/dist/')
+    archiveFileName = "${project.name}".replace(" ", "-") + "-v${project.version}-Windows-x64.zip"
+}
+
+tasks.register('distInstallerWin64', Exec.class) {
+    group 'distribution'
+
+    dependsOn downloadNSIS
+    dependsOn prepareDistWin64
+
+    doFirst {
+        copy {
+            from file('platform/windows/installer/install.nsi') into 'build/dist' rename('install.nsi', 'install64.nsi') filter { line ->
+                line.replace('%name%', project.name)
+                        .replace('%version%', project.version)
+                        .replace('%branch%', grgit.branch.current().name)
+                        .replace('%commit%', grgit.head().id.substring(0, 7))
+                        .replace('%vendor%', project.vendor)
+                        .replace('%year%', new Date().format("yyyy"))
+                        .replace('%install_dir%', project.name.replace(" ", ""))
+                        .replace('%user_dir%', ".${project.name.replace(" ", "-").toLowerCase()}")
+                        .replace('%executable%', "${project.name}".replace(" ", "-"))
+                        .replace('%home%', project.home_link)
+                        .replace('%issue%', project.issue_link)
+            }
+        }
+    }
+
+    def nsis_binary
+    if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+        nsis_binary = new File(projectDir, '/build/tools/nsis/makensis')
+    } else {
+        nsis_binary = 'makensis'
+    }
+    commandLine nsis_binary, 'build/dist/install64.nsi'
+}
+
+tasks.register('distWindows') {
+    group 'distribution'
+
+    dependsOn distWindowsZip
+
+    // Add installer only if this is not running on MacOS that does not support makensis
+    if (!Os.isFamily(Os.FAMILY_MAC)) {
+        dependsOn distInstallerWin64
+    }
+
+    doLast {
+        delete 'build/dist/win64'
+    }
+}

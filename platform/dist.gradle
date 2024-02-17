@@ -1,0 +1,7 @@
+tasks.register('dist') {
+    group 'distribution'
+
+    dependsOn distWindows
+}
+
+apply from: 'platform/windows/windows.gradle'
