@@ -1,0 +1,27 @@
+/* Basic CSS styling for Element can't or hardly be styled programmatically */
+
+.label {
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(gaussian, black, 10, 0, 0, 0);
+}
+
+
+.progress-bar {
+    -fx-background-color: transparent;
+}
+
+.progress-bar .bar {
+    -fx-padding: 2px;
+    -fx-background-insets: 0;
+    -fx-background-color: white;
+}
+
+.progress-bar > .track {
+    -fx-background-color: transparent;
+    -fx-text-box-border: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.progress-bar .indicator {
+    -fx-background-color: transparent;
+}

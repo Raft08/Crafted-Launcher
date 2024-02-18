@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="console">
+            <PatternLayout
+                    pattern="[%d{HH:mm:ss}] %highlight{[%level/%logger]}{ERROR=red, WARN=yellow, INFO=blue, DEBUG=white, TRACE=white} %msg%n"
+                    disableAnsi="false"/>
+        </Console>
+
+        <RollingRandomAccessFile name="file" fileName="logs/latest.log" filePattern="logs/%i-%d{yyyy-MM-dd}.log.gz"
+                                 immediateFlush="false" append="false">
+            <PatternLayout pattern="[%d{HH:mm:ss}] [%level/%logger] [%t] %msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingRandomAccessFile>
+    </Appenders>
+    <Loggers>
+        <Root level="info" includeLocation="false">
+            <AppenderRef ref="console"/>
+            <AppenderRef ref="file"/>
+        </Root>
+    </Loggers>
+</Configuration>

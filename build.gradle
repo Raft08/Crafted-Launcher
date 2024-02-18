@@ -35,6 +35,17 @@ idea {
 dependencies {
     // Utilities
     implementation "fr.atlasworld.common:common:${atlascommon}"
+
+    // Logging
+    implementation "org.apache.logging.log4j:log4j-core:${log4j}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j}"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j}"
+
+    // UI
+    implementation "com.github.Dansoftowner:jSystemThemeDetector:${theme_detector}"
+    implementation ("com.github.Dansoftowner:FXTaskbarProgressBar:v${taskbar}") {
+        exclude group: 'org.openjfx'
+    }
 }
 
 tasks.withType(ProcessResources).configureEach {
@@ -46,7 +57,7 @@ tasks.withType(ProcessResources).configureEach {
 
     inputs.properties properties
 
-    filesMatching(['version.json']) {
+    filesMatching(['version.properties']) {
         expand properties + [project: project]
     }
 }
@@ -95,6 +106,40 @@ javafx {
     version = "${javafx}"
     modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
     configurations = ['provided', 'win64', 'macX64', 'macAarch64', 'linux64']
+}
+
+tasks.register("prepareRun") {
+    group "run"
+
+    dependsOn jar
+
+    doLast {
+        def installDir = file("run/installation/${project.name}")
+        def userDir = file("run/user-data/.${project.name.toLowerCase()}")
+
+        if (!installDir.isDirectory()) {
+            installDir.mkdirs()
+        }
+
+        if (!userDir.isDirectory()) {
+            userDir.mkdirs()
+        }
+    }
+}
+
+tasks.register('run', JavaExec.class) {
+    group 'run'
+
+    dependsOn prepareRun
+
+    classpath += sourceSets.main.runtimeClasspath
+
+    workingDir = new File(project.rootDir, "run/installation/${project.name}")
+    standardInput = System.in
+    mainClass.set("${main_class}")
+    environment(
+            "CRAFTED_HOME", new File(project.rootDir, "run/user-data/.${project.name.toLowerCase()}").toString()
+    )
 }
 
 apply from: 'platform/setup.gradle'

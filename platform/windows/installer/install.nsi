@@ -1,3 +1,6 @@
+; Modified from the MCreator's NSI script (https://github.com/MCreator/MCreator/blob/master/platform/windows/installer/install.nsi)
+; Big thanks to them
+
 ManifestDPIAware true
 Unicode true
 
@@ -130,13 +133,13 @@ Function un.ModifyUnConfirmLeave
 FunctionEnd
 
 Section "Uninstall"
-  ;Delete Folders of MCreator
+  ;Delete Folders of the launcher
   RMDir /r "$INSTDIR\jdk\*.*"
   RMDir /r "$INSTDIR\lib\*.*"
   RMDir /r "$INSTDIR\license\*.*"
   RMDir /r "$INSTDIR\plugins\*.*"
 
-  ;Delete Files of MCreator
+  ;Delete Files of the launcher
   Delete "$INSTDIR\${LAUNCH}"
 
   ;Remove uninstaller
