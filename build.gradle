@@ -35,6 +35,7 @@ idea {
 dependencies {
     // Utilities
     implementation "fr.atlasworld.common:common:${atlascommon}"
+    implementation "fr.atlasworld.common:concurrent:${atlascommon}"
 
     // Logging
     implementation "org.apache.logging.log4j:log4j-core:${log4j}"
