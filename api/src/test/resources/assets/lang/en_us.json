@@ -1,0 +1,4 @@
+{
+  "plugin.test-plugin.name": "Test Plugin",
+  "plugin.test-plugin.description": "Test Plugin to test Crafted-Launcher API"
+}

@@ -1,7 +1,5 @@
 plugins {
     id 'java'
-    id 'idea'
-    id 'eclipse'
     id "de.undercouch.download" version "5.5.0"
     id 'edu.sc.seis.launch4j' version '3.0.5'
     id 'org.ajoberstar.grgit' version '5.2.1'
@@ -9,42 +7,52 @@ plugins {
     id 'org.jetbrains.gradle.plugin.idea-ext' version '1.1.7'
 }
 
-group = "${project.group}"
-version = "${project.version}"
 
-repositories {
-    mavenCentral()
-    maven {
-        name = "AtlasWorld Repo"
-        url = "https://repository.atlasworld.fr/repository/maven-public/"
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = project.group
+    version = project.version
+
+    repositories {
+        mavenCentral()
+        maven {
+            name = "AtlasWorld Repo"
+            url = "https://repository.atlasworld.fr/repository/maven-public/"
+        }
+    }
+
+    eclipse {
+        classpath {
+            downloadSources = true
+        }
+    }
+
+    idea {
+        module {
+            downloadSources = true
+        }
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
     }
 }
 
-eclipse {
-    classpath {
-        downloadSources = true
-    }
-}
 
-idea {
-    module {
-        downloadSources = true
-    }
-}
 
 dependencies {
-    // Utilities
-    implementation "fr.atlasworld.common:common:${atlascommon}"
-    implementation "fr.atlasworld.common:concurrent:${atlascommon}"
+    implementation project(":api")
 
     // Logging
-    implementation "org.apache.logging.log4j:log4j-core:${log4j}"
-    implementation "org.apache.logging.log4j:log4j-api:${log4j}"
-    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j}"
+    implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j_version}"
 
     // UI
-    implementation "com.github.Dansoftowner:jSystemThemeDetector:${theme_detector}"
-    implementation ("com.github.Dansoftowner:FXTaskbarProgressBar:v${taskbar}") {
+    implementation "com.github.Dansoftowner:jSystemThemeDetector:${theme_detector_version}"
+    implementation ("com.github.Dansoftowner:FXTaskbarProgressBar:v${taskbar_version}") {
         exclude group: 'org.openjfx'
     }
 }

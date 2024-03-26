@@ -1,0 +1,9 @@
+{
+  "id": "test-plugin",
+  "version": "1.0.0",
+  "main": "be.raft.launcher.test.TestPlugin",
+  "authors": ["RaftDev"],
+  "contributors": ["NicePerson"],
+  "categories": ["auth", "version", "mod-repo", "theme", "misc"],
+  "requires_restart": true
+}

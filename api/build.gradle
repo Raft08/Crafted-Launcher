@@ -1,0 +1,14 @@
+plugins {
+    id 'java-library'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // Utilities
+    api "fr.atlasworld.common:common:${atlascommon_version}"
+    api "fr.atlasworld.common:concurrent:${atlascommon_version}"
+    api "com.google.inject:guice:${guice_version}"
+}
