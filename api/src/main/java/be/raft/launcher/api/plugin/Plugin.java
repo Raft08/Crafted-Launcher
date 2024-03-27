@@ -1,5 +1,6 @@
 package be.raft.launcher.api.plugin;
 
+import be.raft.launcher.api.asset.AssetsLoader;
 import fr.atlasworld.common.concurrent.action.FutureAction;
 
 /**

@@ -112,7 +112,7 @@ configurations.linux64.attributes {
 }
 
 javafx {
-    version = "${javafx}"
+    version = "${javafx_version}"
     modules = ['javafx.controls', 'javafx.web', 'javafx.swing']
     configurations = ['provided', 'win64', 'macX64', 'macAarch64', 'linux64']
 }
