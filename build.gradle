@@ -1,0 +1,61 @@
+plugins {
+    id 'java'
+    id 'org.openjfx.javafxplugin' version '0.1.0'
+}
+
+dependencies {
+    // Utilities
+    implementation "fr.atlasworld.common:common:${common_version}"
+
+    // Logging
+    implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-api:${log4j_version}"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:${log4j_version}"
+
+    // UI
+    implementation "com.dlsc.gemsfx:gemsfx:$gemsfx_version"
+}
+
+javafx {
+    version = java_version
+    modules = [ 'javafx.controls', 'javafx.graphics']
+}
+
+allprojects {
+    apply plugin: 'idea'
+    apply plugin: 'eclipse'
+
+    group = project.group
+    version = project.version
+
+    repositories {
+        mavenCentral()
+        maven {
+            url "https://repository.atlasworld.fr/repository/maven-public/"
+        }
+        maven {
+            url "https://sandec.jfrog.io/artifactory/repo"
+        }
+    }
+
+    eclipse {
+        classpath {
+            downloadSources = true
+        }
+    }
+
+    idea {
+        module {
+            downloadSources = true
+        }
+    }
+
+    compileJava {
+        options.encoding = "UTF-8"
+    }
+
+    java {
+        toolchain.languageVersion.set(JavaLanguageVersion.of(java_version))
+    }
+}
+
