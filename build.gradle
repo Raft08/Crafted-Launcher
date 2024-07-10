@@ -1,6 +1,9 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.Log4j2PluginsCacheFileTransformer
+
 plugins {
     id 'java'
     id 'org.openjfx.javafxplugin' version '0.1.0'
+    id 'com.github.johnrengelman.shadow' version '7.1.0'
 }
 
 dependencies {
@@ -16,9 +19,51 @@ dependencies {
     implementation "com.dlsc.gemsfx:gemsfx:$gemsfx_version"
 }
 
+shadowJar {
+    manifest {
+        attributes 'Main-Class': "${main_class}"
+    }
+    transform(Log4j2PluginsCacheFileTransformer)
+    archiveClassifier.set('')
+    archiveBaseName.set("AtlasNetwork")
+}
+
 javafx {
     version = java_version
     modules = [ 'javafx.controls', 'javafx.graphics']
+}
+
+build {
+    dependsOn shadowJar
+}
+
+jar {
+    enabled = false
+}
+
+tasks.register("prepareRun") {
+    group "run"
+
+    dependsOn build
+
+    doLast {
+        def runDir = file("run")
+
+        // Create running directory if needed.
+        if (!runDir.isDirectory())
+            runDir.mkdirs()
+    }
+}
+
+tasks.register("run", JavaExec) {
+    group "run"
+    dependsOn prepareRun
+
+    workingDir = new File(project.rootDir, "run")
+    mainClass.set("${main_class}")
+    classpath = files(shadowJar.archiveFile)
+    standardInput = System.in
+    args "--dev"
 }
 
 allprojects {
