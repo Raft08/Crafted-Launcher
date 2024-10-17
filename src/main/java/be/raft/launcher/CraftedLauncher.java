@@ -6,6 +6,7 @@ import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class CraftedLauncher extends Application {
+
     @Override
     public void start(Stage stage) throws Exception {
         Scene scene = new Scene(new GridPane());

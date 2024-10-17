@@ -9,6 +9,7 @@ plugins {
 dependencies {
     // Utilities
     implementation "fr.atlasworld.common:common:${common_version}"
+    implementation "com.github.oshi:oshi-core:${oshi_version}"
 
     // Logging
     implementation "org.apache.logging.log4j:log4j-core:${log4j_version}"
